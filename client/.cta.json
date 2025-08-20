@@ -2,10 +2,12 @@
   "projectName": "client",
   "mode": "file-router",
   "typescript": true,
-  "tailwind": false,
+  "tailwind": true,
   "packageManager": "bun",
   "git": true,
   "version": 1,
   "framework": "react-cra",
-  "chosenAddOns": []
+  "chosenAddOns": [
+    "shadcn"
+  ]
 }
