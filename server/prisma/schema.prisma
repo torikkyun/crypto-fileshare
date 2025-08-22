@@ -4,8 +4,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum FilePermissionType {
@@ -45,6 +46,7 @@ model File {
   ipfsHash      String  @unique @map("ipfs_hash")
   txHash        String  @unique @map("tx_hash")
   encryptionKey String  @map("encryption_key")
+  isDeleted     Boolean @default(false) @map("is_deleted")
 
   createdAt      DateTime         @default(now()) @map("created_at")
   updatedAt      DateTime         @updatedAt @map("updated_at")

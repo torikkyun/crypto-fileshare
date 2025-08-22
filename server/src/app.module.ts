@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './models/users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { FilesModule } from './models/files/files.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
       expandVariables: true,
     }),
     UsersModule,
+    FilesModule,
   ],
 })
 export class AppModule {}
