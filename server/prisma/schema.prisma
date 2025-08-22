@@ -7,3 +7,78 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum FilePermissionType {
+  READ
+  WRITE
+  DOWNLOAD
+}
+
+enum FilePermissionStatus {
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
+
+model User {
+  id            String  @id @default(cuid())
+  name          String?
+  email         String? @unique
+  walletAddress String  @unique @map("wallet_address")
+
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  File           File[]
+  FilePermission FilePermission[]
+  AccessLog      AccessLog[]
+
+  @@map("users")
+}
+
+model File {
+  id            String  @id @default(cuid())
+  owner         User    @relation(fields: [ownerId], references: [id])
+  ownerId       String  @map("owner_id")
+  name          String
+  size          BigInt?
+  type          String?
+  ipfsHash      String  @unique @map("ipfs_hash")
+  txHash        String  @unique @map("tx_hash")
+  encryptionKey String  @map("encryption_key")
+
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  FilePermission FilePermission[]
+  AccessLog      AccessLog[]
+
+  @@map("files")
+}
+
+model FilePermission {
+  id         String               @id @default(cuid())
+  file       File                 @relation(fields: [fileId], references: [id])
+  fileId     String               @map("file_id")
+  user       User                 @relation(fields: [sharedWith], references: [id])
+  sharedWith String               @map("shared_with")
+  type       FilePermissionType
+  expiresAt  DateTime             @map("expires_at")
+  status     FilePermissionStatus @default(ACTIVE)
+
+  sharedAt  DateTime  @default(now()) @map("shared_at")
+  revokedAt DateTime? @map("revoked_at")
+
+  @@map("file_permissions")
+}
+
+model AccessLog {
+  id        String   @id @default(cuid())
+  file      File     @relation(fields: [fileId], references: [id])
+  fileId    String   @map("file_id")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id")
+  action    String
+  timestamp DateTime @default(now())
+  txHash    String   @map("tx_hash")
+
+  @@map("access_logs")
+}

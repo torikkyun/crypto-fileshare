@@ -1,8 +1,8 @@
 services:
-  back-end:
-    container_name: back-end
+  server:
+    container_name: server
     build:
-      context: .
+      context: ./server
       dockerfile: Dockerfile
     ports:
       - 2412:2412
